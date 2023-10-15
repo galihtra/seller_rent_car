@@ -10,10 +10,23 @@ class PromoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Promo Images"),
+        title: const Text("Semua Promo"),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.redAccent, Colors.pinkAccent],
+            ),
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.pinkAccent,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const AddImagePromo()),
@@ -32,7 +45,7 @@ class PromoImageList extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('promo').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         final documents = snapshot.data?.docs;
         return ListView.builder(
@@ -43,16 +56,29 @@ class PromoImageList extends StatelessWidget {
             final docId = document.id; // Get the document ID
 
             return Card(
-              margin: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Image.network(imageUrl),
-                title: Text('Image $index'),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    // Handle the delete action here
-                    deleteImage(docId, imageUrl);
-                  },
+              margin: const EdgeInsets.only(
+                  top: 16.0), // Atur margin agar Card lebih besar
+              child: Container(
+                height: 100,
+                child: Center(
+                  child: ListTile(
+                    leading: Image.network(
+                      imageUrl,
+                      width: 150, // Atur lebar gambar sesuai yang Anda inginkan
+                      height:
+                          280, // Atur tinggi gambar sesuai yang Anda inginkan
+                      fit: BoxFit
+                          .cover, // Atur metode tampilan gambar sesuai kebutuhan
+                    ),
+                    title: Text('Gambar ${index + 1}'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        // Handle the delete action here
+                        deleteImage(docId, imageUrl);
+                      },
+                    ),
+                  ),
                 ),
               ),
             );
@@ -63,7 +89,7 @@ class PromoImageList extends StatelessWidget {
   }
 
   void deleteImage(String docId, String imageUrl) async {
-    if (imageUrl != null) {
+    if (imageUrl.isNotEmpty) {
       try {
         // Hapus gambar dari Firebase Storage
         final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);

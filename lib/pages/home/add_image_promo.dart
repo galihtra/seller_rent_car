@@ -36,7 +36,16 @@ class _AddImagePromoState extends State<AddImagePromo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tambahkan Gambar"),
+        title: const Text("Tambahkan Promo"),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.redAccent, Colors.pinkAccent],
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -123,8 +132,10 @@ class _AddImagePromoState extends State<AddImagePromo> {
   }
 
   Future<void> uploadFile() async {
-    final imgRef =
-        firebase_storage.FirebaseStorage.instance.ref().child('promo_images').child(_uid!);
+    final imgRef = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('promo_images')
+        .child(_uid!);
 
     int i = 1;
     for (var img in _image) {
