@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:seller_rent_car/pages/home/add_image_promo.dart';
+import 'package:seller_rent_car/pages/promo/add_image_promo.dart';
 
 class PromoScreen extends StatelessWidget {
   PromoScreen({Key? key});

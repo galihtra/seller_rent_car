@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seller_rent_car/pages/auth/login_screen.dart';
-import 'package:seller_rent_car/pages/home/promo_screen.dart';
+import 'package:seller_rent_car/pages/car/add_car.dart';
+import 'package:seller_rent_car/pages/promo/promo_screen.dart';
 import 'package:seller_rent_car/pages/home/widgets/status_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -56,7 +57,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: "Tambahkan\nMobil",
                             iconData: Icons.drive_eta,
                             iconColor: Colors.red,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AddCar(),
+                                ),
+                              );
+                            },
                           ),
                           FiturCard(
                             title: "Kelola\nPengemudi",
