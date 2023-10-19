@@ -13,7 +13,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeScreen(),
+    HomeScreen(),
     const Center(
       child: Text('Notifikasi'),
     ),
