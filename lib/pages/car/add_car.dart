@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../model/car_model.dart';
+import '../home/home_screen.dart';
 
 class AddCar extends StatefulWidget {
   const AddCar({Key? key}) : super(key: key);
@@ -16,32 +18,64 @@ class AddCar extends StatefulWidget {
 class _AddCarState extends State<AddCar> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController typeController = TextEditingController();
-  String? imageUrl; // Menyimpan URL gambar
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController maksPassengerController = TextEditingController();
+  final TextEditingController createdYearController = TextEditingController();
+  final TextEditingController maksTrunkController = TextEditingController();
+  final TextEditingController detailController = TextEditingController();
+
+  String? imageUrl;
+  String passengerCategory = '2-4';
 
   Future<void> _addCar() async {
     final name = nameController.text;
     final type = typeController.text;
+    final price = int.parse(priceController.text.replaceAll('.', ''));
+    final maksPassenger = int.parse(maksPassengerController.text);
+    final createdYear = int.parse(createdYearController.text);
+    final maksTrunk = int.parse(maksTrunkController.text);
+    final detail = detailController.text;
 
     if (imageUrl != null && name.isNotEmpty && type.isNotEmpty) {
-      final car = CarModel(name, type, imageUrl!);
+      final car = CarModel(name, type, imageUrl!, passengerCategory, price,
+          maksPassenger, createdYear, maksTrunk, detail);
 
-      await FirebaseFirestore.instance.collection('cars').add(car.toMap());
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Mobil telah ditambahkan ke Firestore'),
-        ),
-      );
+      await FirebaseFirestore.instance
+          .collection('cars')
+          .add(car.toMap())
+          .then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mobil telah ditambahkan ke Firestore'),
+          ),
+        );
 
-      nameController.clear();
-      typeController.clear();
-      setState(() {
-        imageUrl = null;
+        nameController.clear();
+        typeController.clear();
+        setState(() {
+          imageUrl = null;
+        });
+
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mobil telah ditambahkan!'),
+          ),
+        );
+
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Terjadi kesalahan: $error'),
+        ));
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-              'Harap isi semua field dan pilih gambar terlebih dahulu'),
+        const SnackBar(
+          content:
+              Text('Harap isi semua field dan pilih gambar terlebih dahulu'),
         ),
       );
     }
@@ -106,51 +140,139 @@ class _AddCarState extends State<AddCar> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (imageUrl != null)
-              GestureDetector(
-                onTap: _showImageSourceDialog,
-                child: Image.file(
-                  File(imageUrl!),
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-              )
-            else
-              GestureDetector(
-                onTap: _showImageSourceDialog,
-                child: Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: Container(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              if (imageUrl != null)
+                GestureDetector(
+                  onTap: _showImageSourceDialog,
+                  child: Image.file(
+                    File(imageUrl!),
+                    width: 400,
                     height: 200,
-                    width: 200,
-                    color: Colors.white60,
-                    child: const Icon(
-                      Icons.image,
-                      size: 60,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else
+                GestureDetector(
+                  onTap: _showImageSourceDialog,
+                  child: Card(
+                    margin: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 200,
+                      width: 400,
+                      color: Colors.grey,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.image,
+                              size: 60, color: Color.fromARGB(125, 0, 0, 0)),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            "Tambahkan Gambar",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(125, 0, 0, 0)),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
+              const SizedBox(height: 10.0),
+              TextField(
+                controller: nameController,
+                decoration:
+                    const InputDecoration(labelText: 'Nama dan Seri Mobil'),
               ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Nama Mobil'),
-            ),
-            TextField(
-              controller: typeController,
-              decoration: const InputDecoration(labelText: 'Tipe Mobil'),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _addCar,
-              child: const Text('Tambah Mobil'),
-            ),
-          ],
+              TextField(
+                controller: typeController,
+                decoration:
+                    const InputDecoration(labelText: 'Tipe atau Gaya Mobil'),
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                "Pilih Batas Jumlah Penumpang",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              ToggleSwitch(
+                minWidth: 150.0,
+                initialLabelIndex: 0,
+                cornerRadius: 20.0,
+                activeBgColor: const [Colors.pinkAccent],
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey,
+                inactiveFgColor: Colors.white,
+                totalSwitches: 2,
+                labels: const ['2-4', '5-6'],
+                icons: const [Icons.people, Icons.people],
+                onToggle: (index) {
+                  passengerCategory = index == 0 ? '2-4' : '5-6';
+                },
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: priceController,
+                decoration: const InputDecoration(
+                    labelText: 'Harga Sewa Mobil Per Hari'),
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                textAlign: TextAlign.start,
+                "Tambah Data Baru ( Untuk Tampilan Detail )",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: maksPassengerController,
+                decoration:
+                    const InputDecoration(labelText: 'Maks. Jumlah Penumpang'),
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: createdYearController,
+                decoration:
+                    const InputDecoration(labelText: 'Keluaran Tahun 20xx'),
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: maksTrunkController,
+                decoration:
+                    const InputDecoration(labelText: 'Maks. Jumlah Koper'),
+              ),
+              TextField(
+                controller: detailController,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  labelText: 'Isi Detail Lainnya',
+                  alignLabelWithHint: true,
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _addCar,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pinkAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  minimumSize: const Size(350, 50),
+                ),
+                child: const Text(
+                  'Tambah Mobil',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

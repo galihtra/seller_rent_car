@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seller_rent_car/pages/auth/login_screen.dart';
 import 'package:seller_rent_car/pages/car/add_car.dart';
 import 'package:seller_rent_car/pages/promo/promo_screen.dart';
 import 'package:seller_rent_car/pages/home/widgets/status_card_widget.dart';
@@ -18,7 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     String? userEmail = _auth.currentUser!.email;
-    return Scaffold(
+    return MaterialApp(
+      home: Scaffold(
         appBar: AppBar(
           title: const Text("Beranda Admin"),
           flexibleSpace: Container(
@@ -126,6 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
