@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<CarModel> allCars = [];
   List<CarModel> filteredCars = [];
+  String selectedPassengerCount = '';
 
   @override
   void initState() {
@@ -39,13 +40,20 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+  void filterCarsByPassengerCount(String passengerCount) {
+    // Update the filtered cars based on selected passenger count
+    filteredCars =
+        allCars.where((car) => car.passengerCount == passengerCount).toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Beranda Admin"),
+        title: const Text("Beranda Admin"),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -61,32 +69,78 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (searchText) {
-                      updateFilteredCars(searchText);
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Cari nama dan seri mobil...',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (searchText) {
+                            updateFilteredCars(searchText);
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Cari nama dan seri mobil...',
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                // Clear the search text and update the filtered cars
+                                _searchController.clear();
+                                updateFilteredCars('');
+                              },
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),
                 InkWell(
                   onTap: () {
-                    // Implement filter action here
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Filter Jumlah Kursi"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  filterCarsByPassengerCount('2-4');
+                                  Navigator.pop(context); // Close the dialog
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text('2-4 Orang'),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  filterCarsByPassengerCount('5-6');
+                                  Navigator.pop(context); // Close the dialog
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text('5-6 Orang'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
                   },
-                  child: Column(
+                  child: const Column(
                     children: [
                       Icon(Icons.filter_list),
                       Text("Filter"),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -115,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddCar(),
+                              builder: (context) => const AddCar(),
                             ),
                           );
                         },
@@ -158,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final imageFile = File(carData.imageUrl);
 
                 return Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
+                  margin: const EdgeInsets.only(bottom: 10.0),
                   child: InkWell(
                     onTap: () {
                       // Handle the car item tap here
@@ -171,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         children: <Widget>[
                           Container(
-                            margin: EdgeInsets.only(top: 20.0),
+                            margin: const EdgeInsets.only(top: 20.0),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10.0),
                               child: Container(
@@ -185,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           ListTile(
-                            contentPadding: EdgeInsets.only(
+                            contentPadding: const EdgeInsets.only(
                               left: 20.0,
                               right: 20.0,
                               bottom: 20.0,
@@ -193,14 +247,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             title: Text(
                               carData.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             subtitle: Text(
                               carData.type,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
