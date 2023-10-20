@@ -1,7 +1,7 @@
 class CarModel {
   final String name;
   final String type;
-  final String imageUrl;
+  late String imageUrl;
   final String passengerCount;
   final int price;
   final int maksPassenger;

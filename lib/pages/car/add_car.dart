@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../model/car_model.dart';
 import '../home/home_screen.dart';
@@ -26,6 +28,17 @@ class _AddCarState extends State<AddCar> {
 
   String? imageUrl;
   String passengerCategory = '2-4';
+  String? _uid;
+
+  @override
+  void initState() {
+    super.initState();
+    // Get the user's UID during initialization
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      _uid = user.uid;
+    }
+  }
 
   Future<void> _addCar() async {
     final name = nameController.text;
@@ -37,13 +50,38 @@ class _AddCarState extends State<AddCar> {
     final detail = detailController.text;
 
     if (imageUrl != null && name.isNotEmpty && type.isNotEmpty) {
-      final car = CarModel(name, type, imageUrl!, passengerCategory, price,
-          maksPassenger, createdYear, maksTrunk, detail);
+      final car = CarModel(
+        name,
+        type,
+        '', // Biarkan kosong karena URL gambar akan diisi nanti
+        passengerCategory,
+        price,
+        maksPassenger,
+        createdYear,
+        maksTrunk,
+        detail,
+      );
 
-      await FirebaseFirestore.instance
-          .collection('cars')
-          .add(car.toMap())
-          .then((_) {
+      // Generate nama file unik dengan timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final uniqueImageName = 'car_images/$_uid/$timestamp.jpg';
+
+      // Upload gambar ke Firebase Storage dengan nama file yang unik
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child(uniqueImageName);
+      final UploadTask uploadTask = storageReference.putFile(File(imageUrl!));
+      final TaskSnapshot taskSnapshot =
+          await uploadTask.whenComplete(() => null);
+
+      if (taskSnapshot.state == TaskState.success) {
+        final String downloadURL = await storageReference.getDownloadURL();
+
+        // Setel URL gambar yang diunduh ke objek mobil
+        car.imageUrl = downloadURL;
+
+        // Tambahkan data mobil ke Firestore
+        await FirebaseFirestore.instance.collection('cars').add(car.toMap());
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mobil telah ditambahkan ke Firestore'),
@@ -65,12 +103,13 @@ class _AddCarState extends State<AddCar> {
             content: Text('Mobil telah ditambahkan!'),
           ),
         );
-
-      }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Terjadi kesalahan: $error'),
-        ));
-      });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal mengunggah gambar. Silakan coba lagi.'),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
