@@ -3,6 +3,7 @@ import 'package:seller_rent_car/pages/car/add_car.dart';
 import 'package:seller_rent_car/pages/promo/promo_screen.dart';
 import 'package:seller_rent_car/pages/home/widgets/status_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:seller_rent_car/utils/price_ext.dart';
 
 import '../../model/car_model.dart';
 
@@ -146,8 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Container(
               child: Card(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 15.0, vertical: 15.0),
                 clipBehavior: Clip.antiAlias,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -209,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: filteredCars.length,
                 itemBuilder: (context, index) {
                   final carData = filteredCars[index];
-    
+
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10.0),
                     child: InkWell(
@@ -224,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           children: <Widget>[
                             Container(
-                              margin: const EdgeInsets.only(top: 20.0),
+                              margin: const EdgeInsets.only(top: 10.0),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: Container(
@@ -239,22 +240,35 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             ListTile(
                               contentPadding: const EdgeInsets.only(
-                                left: 20.0,
-                                right: 20.0,
-                                bottom: 20.0,
-                                top: 15.0,
+                                left: 50.0,
+                                right: 50.0,
                               ),
-                              title: Text(
-                                carData.name,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    carData.name,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    carData.price
+                                        .toString().formatPrice(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.pinkAccent
+                                    ),
+                                  ),
+                                ],
                               ),
                               subtitle: Text(
                                 carData.type,
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
