@@ -48,9 +48,11 @@ class _AddCarState extends State<AddCar> {
     final createdYear = int.parse(createdYearController.text);
     final maksTrunk = int.parse(maksTrunkController.text);
     final detail = detailController.text;
+    final carId = DateTime.now().millisecondsSinceEpoch.toString();
 
     if (imageUrl != null && name.isNotEmpty && type.isNotEmpty) {
       final car = CarModel(
+        carId,
         name,
         type,
         '', // Biarkan kosong karena URL gambar akan diisi nanti

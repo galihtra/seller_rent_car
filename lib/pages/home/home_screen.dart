@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:seller_rent_car/utils/price_ext.dart';
 
 import '../../model/car_model.dart';
+import '../car/detail_car.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -215,7 +216,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: const EdgeInsets.only(bottom: 10.0),
                     child: InkWell(
                       onTap: () {
-                        // Handle the car item tap here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CarDetailScreen(
+                                carData:
+                                    carData), // Gantilah CarDetailScreen dengan nama layar detail yang Anda miliki
+                          ),
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -255,13 +263,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Text(
-                                    carData.price
-                                        .toString().formatPrice(),
+                                    carData.price.toString().formatPrice(),
                                     style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.pinkAccent
-                                    ),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.pinkAccent),
                                   ),
                                 ],
                               ),

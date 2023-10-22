@@ -1,4 +1,5 @@
 class CarModel {
+  final String id;
   final String name;
   final String type;
   late String imageUrl;
@@ -9,11 +10,21 @@ class CarModel {
   final int maksTrunk;
   final String detail;
 
-  CarModel(this.name, this.type, this.imageUrl, this.passengerCount, this.price,
-      this.maksPassenger, this.createdYear, this.maksTrunk, this.detail);
+  CarModel(
+      this.id,
+      this.name,
+      this.type,
+      this.imageUrl,
+      this.passengerCount,
+      this.price,
+      this.maksPassenger,
+      this.createdYear,
+      this.maksTrunk,
+      this.detail);
 
   CarModel.fromMap(Map<String, dynamic> map)
-      : name = map['name'] as String,
+      : id = map['id'] as String,
+        name = map['name'] as String,
         type = map['type'] as String,
         imageUrl = map['imageUrl'] as String,
         passengerCount = map['passengerCount'] as String,
@@ -25,6 +36,7 @@ class CarModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'type': type,
       'imageUrl': imageUrl,
