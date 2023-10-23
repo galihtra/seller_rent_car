@@ -50,6 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 100),
+                const Text(
+                  "ONICARS", // Tambahkan teks ONICARS di sini
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 200,
+                ),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,

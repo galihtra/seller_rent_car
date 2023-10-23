@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:seller_rent_car/pages/car/add_car.dart';
 import 'package:seller_rent_car/pages/promo/promo_screen.dart';
@@ -18,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<CarModel> allCars = [];
   List<CarModel> filteredCars = [];
   String selectedPassengerCount = '';
+  HashSet<CarModel> selectedCars = HashSet();
+  bool isMultiSelectionEnabled = false;
 
   @override
   void initState() {
@@ -48,6 +52,54 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+  void enableMultiSelection() {
+    isMultiSelectionEnabled = true;
+    setState(() {});
+  }
+
+  void toggleCarSelection(CarModel carData) {
+    if (selectedCars.contains(carData)) {
+      selectedCars.remove(carData);
+    } else {
+      selectedCars.add(carData);
+    }
+    setState(() {});
+  }
+
+  void navigateToCarDetail(CarModel carData) {
+    if (!isMultiSelectionEnabled) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CarDetailScreen(carData: carData),
+        ),
+      );
+    }
+  }
+
+  void deleteSelectedCars() async {
+  try {
+    final List<String> carIdsToDelete =
+        selectedCars.map((car) => car.id).toList();
+
+    // Debug: Print carIdsToDelete to verify the list of car IDs
+    print('Car IDs to delete: $carIdsToDelete');
+
+    for (final carId in carIdsToDelete) {
+      await FirebaseFirestore.instance.collection('cars').doc(carId).delete();
+    }
+
+    allCars.removeWhere((car) => selectedCars.contains(car));
+    filteredCars = List.from(allCars);
+    selectedCars.clear();
+    isMultiSelectionEnabled = false;
+    setState(() {});
+  } catch (e) {
+    print('Error deleting car: $e');
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -63,6 +115,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          actions: [
+            Visibility(
+              visible: isMultiSelectionEnabled,
+              child: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  deleteSelectedCars();
+                },
+              ),
+            ),
+          ],
         ),
         body: ListView(
           children: [
@@ -211,23 +274,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: filteredCars.length,
                 itemBuilder: (context, index) {
                   final carData = filteredCars[index];
+                  final bool isSelected = selectedCars.contains(carData);
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10.0),
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CarDetailScreen(
-                                carData:
-                                    carData), // Gantilah CarDetailScreen dengan nama layar detail yang Anda miliki
-                          ),
-                        );
+                        if (isMultiSelectionEnabled) {
+                          toggleCarSelection(carData);
+                        } else {
+                          navigateToCarDetail(carData);
+                        }
+                      },
+                      onLongPress: () {
+                        enableMultiSelection();
+                        toggleCarSelection(carData);
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
+                          color: isSelected
+                              ? Colors.blue[100]
+                              : Colors.white.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Column(
@@ -265,9 +332,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     carData.price.toString().formatPrice(),
                                     style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.pinkAccent),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.pinkAccent,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -277,6 +345,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
+                              ),
+                            ),
+                            // Checkbox untuk multi selection
+                            Visibility(
+                              visible: isMultiSelectionEnabled,
+                              child: Checkbox(
+                                value: isSelected,
+                                onChanged: (bool? value) {
+                                  toggleCarSelection(carData);
+                                },
                               ),
                             ),
                           ],
