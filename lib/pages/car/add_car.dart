@@ -65,9 +65,13 @@ class _AddCarState extends State<AddCar> {
       );
 
 
+      // Generate nama file unik dengan timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final uniqueImageName = 'car_images/$_uid/$timestamp.jpg';
+
       // Upload gambar ke Firebase Storage dengan nama file yang unik
       final Reference storageReference =
-          FirebaseStorage.instance.ref().child('car_images').child(_uid!);
+          FirebaseStorage.instance.ref().child(uniqueImageName);
       final UploadTask uploadTask = storageReference.putFile(File(imageUrl!));
       final TaskSnapshot taskSnapshot =
           await uploadTask.whenComplete(() => null);
