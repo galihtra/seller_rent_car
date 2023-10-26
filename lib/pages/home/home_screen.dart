@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     FirebaseFirestore.instance.collection('cars').get().then((querySnapshot) {
       allCars = querySnapshot.docs
-          .map((car) => CarModel.fromMap(car.data() as Map<String, dynamic>))
+          .map((car) => CarModel.fromSnapshot(car))
           .toList();
       filteredCars = List.from(allCars);
       setState(() {});

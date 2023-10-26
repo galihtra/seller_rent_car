@@ -48,20 +48,19 @@ class _AddCarState extends State<AddCar> {
     final createdYear = int.parse(createdYearController.text);
     final maksTrunk = int.parse(maksTrunkController.text);
     final detail = detailController.text;
-    final carId = DateTime.now().millisecondsSinceEpoch.toString();
 
     if (imageUrl != null && name.isNotEmpty && type.isNotEmpty) {
       final car = CarModel(
-        carId,
-        name,
-        type,
-        '', // Biarkan kosong karena URL gambar akan diisi nanti
-        passengerCategory,
-        price,
-        maksPassenger,
-        createdYear,
-        maksTrunk,
-        detail,
+        id: '',
+        name: name,
+        type: type,
+        imageUrl: '', // Biarkan kosong karena URL gambar akan diisi nanti
+        passengerCount: passengerCategory,
+        price: price,
+        maksPassenger: maksPassenger,
+        createdYear: createdYear,
+        maksTrunk: maksTrunk,
+        detail: detail,
       );
 
 
@@ -82,8 +81,17 @@ class _AddCarState extends State<AddCar> {
         // Setel URL gambar yang diunduh ke objek mobil
         car.imageUrl = downloadURL;
 
-        // Tambahkan data mobil ke Firestore
-        await FirebaseFirestore.instance.collection('cars').add(car.toMap());
+        final CollectionReference carRef =
+            FirebaseFirestore.instance.collection('cars');
+
+        final DocumentReference docRef =
+            await carRef.add(car.toJson());
+        final String carId = docRef.id;
+
+        car.id = carId;
+        await docRef.update({'id': carId});
+
+        // Navigator.pop(context);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
