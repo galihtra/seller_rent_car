@@ -54,7 +54,7 @@ class _AddCarState extends State<AddCar> {
         id: '',
         name: name,
         type: type,
-        imageUrl: '', // Biarkan kosong karena URL gambar akan diisi nanti
+        imageUrl: '', 
         passengerCount: passengerCategory,
         price: price,
         maksPassenger: maksPassenger,
@@ -78,7 +78,7 @@ class _AddCarState extends State<AddCar> {
       if (taskSnapshot.state == TaskState.success) {
         final String downloadURL = await storageReference.getDownloadURL();
 
-        // Setel URL gambar yang diunduh ke objek mobil
+  
         car.imageUrl = downloadURL;
 
         final CollectionReference carRef =

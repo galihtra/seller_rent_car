@@ -120,6 +120,15 @@ class _EditCarScreenState extends State<EditCarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Mobil'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.redAccent, Colors.pinkAccent],
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -202,17 +211,36 @@ class _EditCarScreenState extends State<EditCarScreen> {
                     return null;
                   },
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 ElevatedButton(
                   onPressed: () {
                     _uploadImage();
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pinkAccent
+                  ),
                   child: const Text('Unggah Gambar Mobil Baru'),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 ElevatedButton(
                   onPressed: () {
                     updateData();
                   },
-                  child: const Text('Simpan Perubahan'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pinkAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    minimumSize: const Size(350, 50),
+                  ),
+                  child: const Text(
+                    'Simpan Perubahan',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ],
             ),
