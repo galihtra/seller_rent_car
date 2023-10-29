@@ -39,12 +39,14 @@ class _DriversScreenState extends State<DriversScreen> {
           );
         },
       ),
-      body: DriverList(),
+      body: const DriverList(),
     );
   }
 }
 
 class DriverList extends StatelessWidget {
+  const DriverList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
