@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:seller_rent_car/pages/car/add_car.dart';
+import 'package:seller_rent_car/pages/driver/drivers_screen.dart';
 import 'package:seller_rent_car/pages/promo/promo_screen.dart';
 import 'package:seller_rent_car/pages/home/widgets/status_card_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -240,11 +241,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         FiturCard(
-                          title: "Kelola\nPengemudi",
+                          title: "Kelola\nSupir",
                           iconData: Icons.manage_search,
                           iconColor: Colors.blue,
                           onTap: () {
-                            // Implement driver management
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DriversScreen(),
+                              ),
+                            );
                           },
                         ),
                         FiturCard(
