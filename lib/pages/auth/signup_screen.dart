@@ -21,7 +21,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _simController = TextEditingController();
   TextEditingController _noTelpController = TextEditingController();
-  TextEditingController _alamatController = TextEditingController(); // Controller untuk alamat
+  TextEditingController _alamatController =
+      TextEditingController(); // Controller untuk alamat
 
   String _email = "";
   String _password = "";
@@ -68,7 +69,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -77,15 +77,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 10),
+                const Text(
+                  "ONICARS", // Tambahkan teks ONICARS di sini
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 40),
                 TextFormField(
                   controller: _nameController, // Controller untuk nama
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Name", // Field Nama
+                    labelText: "Nama Lengkap", // Field Nama
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your Name";
+                      return "Masukkan Nama Lengkap Anda";
                     }
                     return null;
                   },
@@ -103,11 +112,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Email",
+                    labelText: "Alamat Email",
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your Email";
+                      return "Masukkan Email Anda";
                     }
                     return null;
                   },
@@ -135,7 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Gender", // Field Jenis Kelamin
+                    labelText: "Jenis Kelamin", // Field Jenis Kelamin
                   ),
                 ),
                 const SizedBox(
@@ -149,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your SIM";
+                      return "Masukkan Nomor SIM Anda";
                     }
                     return null;
                   },
@@ -163,14 +172,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
-                  controller: _noTelpController, // Controller untuk nomor telepon
+                  controller:
+                      _noTelpController, // Controller untuk nomor telepon
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Nomor Telepon", // Field Nomor Telepon
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your Phone Number";
+                      return "Masukkan Nomor Telepon Anda";
                     }
                     return null;
                   },
@@ -204,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       !_isPasswordVisible, // Mengubah tampilan berdasarkan _isPasswordVisible
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    labelText: "Password",
+                    labelText: "Kata Sandi",
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible
@@ -220,7 +230,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your Password";
+                      return "Masukkan Kata sandi Anda";
                     }
                     return null;
                   },
@@ -234,8 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 Container(
-                  // Wrapper untuk tombol dengan lebar sesuai dengan ukuran layar
-                  width: double.infinity,
+                  width: 260,
                   height: 45,
                   child: ElevatedButton(
                     onPressed: () {
@@ -243,7 +252,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         _handleSignUp();
                       }
                     },
-                    child: const Text("Daftar Akun"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.pinkAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: const Text("Buat Akun"),
                   ),
                 ),
                 const SizedBox(

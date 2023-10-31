@@ -95,11 +95,9 @@ class DriverList extends StatelessWidget {
 
   void deleteDriver(String docId) async {
     try {
-      // Hapus dokumen driver dari Firestore
       await FirebaseFirestore.instance.collection('drivers').doc(docId).delete();
     } catch (e) {
       print('Error deleting driver: $e');
-      // Tambahkan penanganan kesalahan jika diperlukan
     }
   }
 }

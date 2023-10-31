@@ -41,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -66,11 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Email",
+                    labelText: "Alamat Email",
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your Email";
+                      return "Masukkan Alamat Email Anda";
                     }
                     return null;
                   },
@@ -89,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       !_isPasswordVisible, // Mengontrol tampilan kata sandi
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    labelText: "Password",
+                    labelText: "Kata Sandi",
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible
@@ -105,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please Enter Your Password";
+                      return "Masukkan Kata Sandi Anda";
                     }
                     return null;
                   },
@@ -116,11 +115,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 100,
                 ),
                 Container(
-                  // Wrapper untuk tombol dengan lebar sesuai dengan ukuran layar
-                  width: double.infinity,
+                  width: 260,
                   height: 45,
                   child: ElevatedButton(
                     onPressed: () {
@@ -128,7 +126,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         _handleLogin();
                       }
                     },
-                    child: const Text("Login"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.pinkAccent, 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: const Text(
+                      "Masuk",
+                      style: TextStyle(
+                        fontSize: 18, 
+                        fontWeight: FontWeight.bold,
+                      ), // Menjadikan teks tebal
+                    ),
                   ),
                 ),
                 const SizedBox(
