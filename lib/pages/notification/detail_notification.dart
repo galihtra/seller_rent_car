@@ -25,7 +25,6 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
   @override
   void initState() {
     super.initState();
-    // Panggil _fetchCarNames saat inisialisasi
     _fetchCarNames([widget.dataPayment.carId]);
   }
 
@@ -40,6 +39,19 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
         carDetails[carId] = carSnapshot.data()?['detail'] ?? 'Unknown Car';
       });
     }
+  }
+
+  void _showFullscreenImage(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Image.network(imageUrl, fit: BoxFit.contain),
+        ),
+      ),
+    );
   }
 
   @override
@@ -178,12 +190,12 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                           ),
                         ),
                         Text(
-                            'Lokasi Dituju: ${widget.dataPayment.locationDestination}'),
-                        Text(
                             'Lokasi Penjemputan: ${widget.dataPayment.locationPickUp}'),
                         Text(
                             'Waktu Penjemputan: ${widget.dataPayment.datePickUp}'),
                         const SizedBox(height: 16.0),
+                        Text(
+                            'Lokasi Dituju: ${widget.dataPayment.locationDestination!.isNotEmpty ? widget.dataPayment.locationDestination : '-'}'),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -208,25 +220,53 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             if (widget.dataPayment.imageKtp != null)
-                              Card(
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: Image.network(
-                                    widget.dataPayment.imageKtp!,
-                                    fit: BoxFit.cover,
-                                  ),
+                              GestureDetector(
+                                onTap: () {
+                                  _showFullscreenImage(
+                                      widget.dataPayment.imageKtp!);
+                                },
+                                child: Column(
+                                  children: [
+                                    const Text("Scan KTP"),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    Card(
+                                      child: Container(
+                                        width: 100,
+                                        height: 100,
+                                        child: Image.network(
+                                          widget.dataPayment.imageKtp!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             if (widget.dataPayment.imageSim != null)
-                              Card(
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: Image.network(
-                                    widget.dataPayment.imageSim!,
-                                    fit: BoxFit.cover,
-                                  ),
+                              GestureDetector(
+                                onTap: () {
+                                  _showFullscreenImage(
+                                      widget.dataPayment.imageSim!);
+                                },
+                                child: Column(
+                                  children: [
+                                    const Text("Scan SIM"),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    Card(
+                                      child: Container(
+                                        width: 100,
+                                        height: 100,
+                                        child: Image.network(
+                                          widget.dataPayment.imageSim!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             if (widget.dataPayment.trfMethod == 'Transfer Bank')
@@ -248,16 +288,29 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                                     var imageBuktiTrfUrl =
                                         snapshot.data!['imageBuktiTrf'];
                                     return imageBuktiTrfUrl != null
-                                        ? Card(
-                                            child: Container(
-                                              width: 100,
-                                              height: 100,
-                                              child: Image.network(
-                                                imageBuktiTrfUrl,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          )
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              _showFullscreenImage(
+                                                  imageBuktiTrfUrl);
+                                            },
+                                            child: Column(
+                                              children: [
+                                                const Text("Bukti Transfer"),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Card(
+                                                  child: Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: Image.network(
+                                                      imageBuktiTrfUrl,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ))
                                         : const Text(
                                             'No transfer proof available.');
                                   } else {
