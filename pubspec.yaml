@@ -30,6 +30,7 @@ environment:
 dependencies:
   cloud_firestore: ^4.8.2
   cupertino_icons: ^1.0.2
+  date_format: ^2.0.7
   firebase_auth: ^4.6.3
   firebase_core: ^2.17.0
   firebase_storage: ^11.2.4
@@ -37,6 +38,7 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.1.0
   image_picker: ^0.8.7+5
+  intl: ^0.18.1
   money_formatter: ^0.0.5
   toggle_switch: ^2.1.0
   transparent_image: ^2.0.1

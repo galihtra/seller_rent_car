@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seller_rent_car/pages/home/home_screen.dart';
+import 'package:seller_rent_car/pages/notification/notification_screen.dart';
 import 'package:seller_rent_car/pages/profile/profile_screen.dart'; // Gantilah dengan impor yang sesuai
 
 class DashboardScreen extends StatefulWidget {
@@ -14,9 +15,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<Widget> _pages = [
     HomeScreen(),
-    const Center(
-      child: Text('Notifikasi'),
-    ),
+    const NotificationScreen(),
     const Center(
       child: Text('Riwayat'),
     ),
