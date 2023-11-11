@@ -193,9 +193,9 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                             'Lokasi Penjemputan: ${widget.dataPayment.locationPickUp}'),
                         Text(
                             'Waktu Penjemputan: ${widget.dataPayment.datePickUp}'),
-                        const SizedBox(height: 16.0),
                         Text(
                             'Lokasi Dituju: ${widget.dataPayment.locationDestination!.isNotEmpty ? widget.dataPayment.locationDestination : '-'}'),
+                        const SizedBox(height: 16.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
