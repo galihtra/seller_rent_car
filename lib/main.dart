@@ -30,7 +30,6 @@ class MyApp extends StatelessWidget {
             if (user == null) {
               return SplashScreen(
                 onInitializationComplete: () {
-                  // Navigasi ke layar Login setelah splash screen selesai
                   navigatorKey.currentState?.pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => const LoginScreen(),
@@ -41,7 +40,6 @@ class MyApp extends StatelessWidget {
             } else {
               return SplashScreen(
                 onInitializationComplete: () {
-                  // Navigasi ke layar Dashboard setelah splash screen selesai
                   navigatorKey.currentState?.pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => const DashboardScreen(),

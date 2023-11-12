@@ -54,6 +54,17 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
     );
   }
 
+  Future<void> _updatePaymentStatus(String newStatus) async {
+    await FirebaseFirestore.instance
+        .collection('payments')
+        .doc(widget.dataPayment.id)
+        .update({'paymentStatus': newStatus});
+
+    setState(() {
+      widget.dataPayment.paymentStatus = newStatus;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -326,6 +337,37 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                           ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                            right: 8.0,
+                            top: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (widget.dataPayment.paymentStatus ==
+                                  'Diproses')
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      _updatePaymentStatus('Ditolak'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red),
+                                  child: const Text("Tolak"),
+                                ),
+                              const SizedBox(width: 10.0),
+                              if (widget.dataPayment.paymentStatus ==
+                                  'Diproses')
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      _updatePaymentStatus('Disiapkan'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green),
+                                  child: const Text("Terima"),
+                                ),
+                            ],
+                          ),
                         )
                       ],
                     ),

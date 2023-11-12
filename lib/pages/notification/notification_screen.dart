@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:seller_rent_car/pages/notification/detail_notification.dart';
-
 import '../../../model/payment_model.dart';
 import 'package:intl/intl.dart';
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
-  // Method to fetch car names using a list of car IDs
+  @override
+  _NotificationScreenState createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationScreen> {
+  String? _currentFilter = 'Diproses';
+
   Future<Map<String, String>> _fetchCarNames(List<String> carIds) async {
     var carNames = <String, String>{};
     for (var carId in carIds) {
@@ -19,11 +24,25 @@ class NotificationScreen extends StatelessWidget {
     return carNames;
   }
 
+  void _setFilter(String filter) {
+    setState(() {
+      _currentFilter = filter;
+    });
+  }
+
+  Stream<QuerySnapshot> _paymentStream() {
+    var collection = FirebaseFirestore.instance.collection('payments');
+    if (_currentFilter != null) {
+      return collection.where('paymentStatus', isEqualTo: _currentFilter).snapshots();
+    }
+    return collection.snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Pengajuan'),
+        title: Text('Daftar Pengajuan  $_currentFilter'),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -33,12 +52,15 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: _showFilterDialog,
+          ),
+        ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('payments')
-            .where('paymentStatus', isEqualTo: 'Diproses')
-            .snapshots(),
+        stream: _paymentStream(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Text('Something went wrong');
@@ -48,7 +70,6 @@ class NotificationScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Check if the snapshot has data and is not empty
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(child: Text('Tidak ada data tersedia'));
           }
@@ -61,8 +82,7 @@ class NotificationScreen extends StatelessWidget {
 
           return FutureBuilder(
             future: _fetchCarNames(carIds),
-            builder:
-                (context, AsyncSnapshot<Map<String, String>> carNamesSnapshot) {
+            builder: (context, AsyncSnapshot<Map<String, String>> carNamesSnapshot) {
               if (carNamesSnapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -94,7 +114,8 @@ class NotificationScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(DateFormat('dd MMMM yyyy').format(DateTime.parse(payment.dateRent))),
+                        Text(DateFormat('dd MMMM yyyy')
+                            .format(DateTime.parse(payment.dateRent))),
                         Text('${payment.datePickUp} WIB')
                       ],
                     ),
@@ -109,6 +130,37 @@ class NotificationScreen extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Filter Status"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _filterOption('Diproses'),
+              _filterOption('Disiapkan'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  InkWell _filterOption(String status) {
+    return InkWell(
+      onTap: () {
+        _setFilter(status);
+        Navigator.pop(context); // Close the dialog
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(status),
       ),
     );
   }
