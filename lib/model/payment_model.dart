@@ -17,6 +17,8 @@ class PaymentModel {
   String trfMethod;
   int priceRent;
   String paymentStatus;
+  String? driverId;
+  String? driverName;
 
   PaymentModel({
     required this.id,
@@ -35,6 +37,8 @@ class PaymentModel {
     required this.trfMethod,
     required this.priceRent,
     required this.paymentStatus,
+    this.driverId,
+    this.driverName,
   });
 
   PaymentModel.fromSnapshot(DocumentSnapshot snapshot)
@@ -53,7 +57,9 @@ class PaymentModel {
         isWithDriver = snapshot['isWithDriver'],
         trfMethod = snapshot['trfMethod'],
         priceRent = snapshot['priceRent'],
-        paymentStatus = snapshot['paymentStatus'];
+        paymentStatus = snapshot['paymentStatus'],
+        driverId = snapshot['driverId'],
+        driverName = snapshot['driverName'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -72,5 +78,7 @@ class PaymentModel {
         'trfMethod': trfMethod,
         'priceRent': priceRent,
         'paymentStatus': paymentStatus,
+        'driverId': driverId,
+        'driverName': driverName,
       };
 }

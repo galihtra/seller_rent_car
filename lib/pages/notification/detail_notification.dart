@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seller_rent_car/utils/price_ext.dart';
 
+import '../../model/driver_model.dart';
 import '../../model/payment_model.dart';
 
 class DetailNotificationScreen extends StatefulWidget {
@@ -17,6 +18,9 @@ class DetailNotificationScreen extends StatefulWidget {
 }
 
 class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
+  String? selectedDriverName;
+  String? selectedDriverId;
+
   Map<String, String> carNames = {};
   Map<String, String> carImages = {};
   Map<String, String> carTypes = {};
@@ -72,6 +76,27 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
         .delete();
 
     Navigator.pop(context);
+  }
+
+  Future<List<DriverModel>> _fetchDrivers() async {
+    var driversSnapshot =
+        await FirebaseFirestore.instance.collection('drivers').get();
+    return driversSnapshot.docs
+        .map((doc) => DriverModel.fromSnapshot(doc))
+        .toList();
+  }
+
+  Future<void> _assignDriver(String driverId, String driverName) async {
+    if (widget.dataPayment.isWithDriver &&
+        widget.dataPayment.paymentStatus == 'Diproses') {
+      await FirebaseFirestore.instance
+          .collection('payments')
+          .doc(widget.dataPayment.id)
+          .update({
+        'driverId': driverId,
+        'driverName': driverName,
+      });
+    }
   }
 
   @override
@@ -347,6 +372,65 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                               ),
                           ],
                         ),
+                        if (widget.dataPayment.isWithDriver &&
+                            widget.dataPayment.paymentStatus == 'Diproses')
+                          FutureBuilder<List<DriverModel>>(
+                            future: _fetchDrivers(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+                              if (snapshot.hasError || !snapshot.hasData) {
+                                return const Text('Failed to load drivers');
+                              }
+
+                              var drivers = snapshot.data!;
+                              return Column(
+                                children: [
+                                  DropdownButton<String>(
+                                    hint: const Text("Pilih Supir"),
+                                    value: selectedDriverId,
+                                    onChanged: (value) {
+                                      var selectedDriver = drivers.firstWhere(
+                                          (driver) => driver.id == value);
+                                      _assignDriver(selectedDriver.id,
+                                          selectedDriver.name);
+                                      setState(() {
+                                        selectedDriverId = selectedDriver.id;
+                                        selectedDriverName =
+                                            selectedDriver.name;
+                                      });
+                                    },
+                                    items: drivers
+                                        .map<DropdownMenuItem<String>>(
+                                            (driver) {
+                                      return DropdownMenuItem<String>(
+                                        value: driver.id,
+                                        child: Text(driver.name),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  if (selectedDriverName != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'Pengemudi: $selectedDriverName',
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        if (widget.dataPayment.isWithDriver == true && widget.dataPayment.paymentStatus != 'Diproses')
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Pengemudi: ${widget.dataPayment.driverName}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
                         Padding(
                           padding: const EdgeInsets.only(
                             left: 8.0,
