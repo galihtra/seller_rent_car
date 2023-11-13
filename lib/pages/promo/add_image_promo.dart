@@ -25,7 +25,6 @@ class _AddImagePromoState extends State<AddImagePromo> {
   @override
   void initState() {
     super.initState();
-    // Get the user's UID during initialization
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       _uid = user.uid;
@@ -156,7 +155,6 @@ class _AddImagePromoState extends State<AddImagePromo> {
 
         i++;
       } catch (e) {
-        // Handle any potential errors here
         print("Error uploading file: $e");
       }
     }

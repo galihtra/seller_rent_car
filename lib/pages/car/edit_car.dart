@@ -102,7 +102,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) =>
-              HomeScreen(), // Gantilah dengan nama kelas halaman HomeScreen yang sebenarnya
+              HomeScreen(), 
         ));
       } catch (e) {
         print('Error updating car: $e');

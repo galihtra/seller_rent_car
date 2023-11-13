@@ -149,7 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               suffixIcon: IconButton(
                                 icon: const Icon(Icons.clear),
                                 onPressed: () {
-                                  // Clear the search text and update the filtered cars
                                   _searchController.clear();
                                   updateFilteredCars('');
                                 },

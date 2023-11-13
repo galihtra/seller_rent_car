@@ -53,28 +53,27 @@ class PromoImageList extends StatelessWidget {
           itemBuilder: (context, index) {
             final document = documents[index];
             final imageUrl = document['url'] as String;
-            final docId = document.id; // Get the document ID
+            final docId = document.id; 
 
             return Card(
               margin: const EdgeInsets.only(
-                  top: 16.0), // Atur margin agar Card lebih besar
+                  top: 16.0), 
               child: Container(
                 height: 100,
                 child: Center(
                   child: ListTile(
                     leading: Image.network(
                       imageUrl,
-                      width: 150, // Atur lebar gambar sesuai yang Anda inginkan
+                      width: 150, 
                       height:
-                          280, // Atur tinggi gambar sesuai yang Anda inginkan
+                          280,
                       fit: BoxFit
-                          .cover, // Atur metode tampilan gambar sesuai kebutuhan
+                          .cover, 
                     ),
                     title: Text('Gambar ${index + 1}'),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        // Handle the delete action here
                         deleteImage(docId, imageUrl);
                       },
                     ),
@@ -91,16 +90,13 @@ class PromoImageList extends StatelessWidget {
   void deleteImage(String docId, String imageUrl) async {
     if (imageUrl.isNotEmpty) {
       try {
-        // Hapus gambar dari Firebase Storage
         final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
         await storageRef.delete();
       } catch (e) {
         print('Error deleting image from Firebase Storage: $e');
-        // Tambahkan penanganan kesalahan jika diperlukan
       }
     }
 
-    // Hapus dokumen promo dari Firestore
     await FirebaseFirestore.instance.collection('promo').doc(docId).delete();
   }
 }

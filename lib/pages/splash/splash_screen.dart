@@ -26,7 +26,6 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo here
             Image.asset(
               'assets/images/logo_onicars.png',
               height: 120,

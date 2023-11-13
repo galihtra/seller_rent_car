@@ -198,22 +198,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20.0),
                     buildProfileCard(
-                      'Pengaturan',
-                      Icons.settings,
-                      () {
-                        print("Pengaturan");
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    buildProfileCard(
-                      'Riwayat Transaksi',
-                      Icons.history,
-                      () {
-                        print("Riwayat Transaksi");
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    buildProfileCard(
                       'Panduan Rental',
                       Icons.book,
                       () {
