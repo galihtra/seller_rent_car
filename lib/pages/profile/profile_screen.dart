@@ -63,7 +63,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          // Latar Belakang Gradien
           Container(
             width: double.infinity,
             height: 150.0,
@@ -112,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: <Widget>[
                                 Text(
                                   userName ??
-                                      "", // Menampilkan nama pengguna atau string kosong jika tidak ada
+                                      "", 
                                   style: const TextStyle(
                                     color: Colors.redAccent,
                                     fontSize: 22.0,
@@ -124,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 Text(
                                   userEmail ??
-                                      "", // Menampilkan email pengguna atau string kosong jika tidak ada
+                                      "",
                                   style: const TextStyle(
                                     fontSize: 20.0,
                                     color: Colors.pinkAccent,
@@ -138,52 +137,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                // Menambahkan widget lain di sini
               ],
             ),
           ),
 
-          // Kartu Status
           Positioned(
-            top: 220.0, // Sesuaikan posisi vertikal kartu
-            left: 20.0,
-            right: 20.0,
-            child: Card(
-              margin: const EdgeInsets.all(0.0),
-              clipBehavior: Clip.antiAlias,
-              color: Colors.white,
-              elevation: 5.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 22.0,
-                ),
-                child: Row(
-                  children: <Widget>[
-                    StatusCard(
-                      title: "Belum\nBayar",
-                      iconData: Icons.account_balance_wallet,
-                      iconColor: Colors.red,
-                    ),
-                    StatusCard(
-                      title: "Disiapkan",
-                      iconData: Icons.cached,
-                      iconColor: Colors.blue,
-                    ),
-                    StatusCard(
-                      title: "Menuju\nLokasi",
-                      iconData: Icons.pin_drop,
-                      iconColor: Colors.green,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Container untuk mengatur posisi semua kartu
-          Positioned(
-            top: 370.0, // Sesuaikan posisi vertikal kartu
+            top: 220.0,
             left: 5.0,
             right: 5.0,
             child: Card(
@@ -212,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ).then((result) {
                           if (result != null && result) {
-                            // Perubahan data telah disimpan, tampilkan notifikasi berhasil
+                            
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -223,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () {
-                                        // Tutup dialog dan muat ulang data
+                                     
                                         Navigator.of(context).pop();
                                         _updateUserData();
                                       },

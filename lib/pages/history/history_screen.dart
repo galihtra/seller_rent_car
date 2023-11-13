@@ -1,48 +1,28 @@
 import 'package:flutter/material.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:seller_rent_car/pages/notification/detail_notification.dart';
-import '../../../model/payment_model.dart';
 import 'package:intl/intl.dart';
+import 'package:seller_rent_car/pages/notification/detail_notification.dart';
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+import '../../../model/payment_model.dart';
 
-  @override
-  _NotificationScreenState createState() => _NotificationScreenState();
-}
-
-class _NotificationScreenState extends State<NotificationScreen> {
-  String? _currentFilter = 'Diproses';
+class HistoryScreen extends StatelessWidget {
+  const HistoryScreen({super.key});
 
   Future<Map<String, String>> _fetchCarNames(List<String> carIds) async {
     var carNames = <String, String>{};
     for (var carId in carIds) {
-      var carSnapshot =
-          await FirebaseFirestore.instance.collection('cars').doc(carId).get();
+      var carSnapshot = await FirebaseFirestore.instance.collection('cars').doc(carId).get();
       carNames[carId] = carSnapshot.data()?['name'] ?? 'Unknown Car';
     }
     return carNames;
-  }
-
-  void _setFilter(String filter) {
-    setState(() {
-      _currentFilter = filter;
-    });
-  }
-
-  Stream<QuerySnapshot> _paymentStream() {
-    var collection = FirebaseFirestore.instance.collection('payments');
-    if (_currentFilter != null) {
-      return collection.where('paymentStatus', isEqualTo: _currentFilter).snapshots();
-    }
-    return collection.snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daftar Pengajuan $_currentFilter'),
+        title: const Text('Daftar Riwayat'),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -52,15 +32,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: _showFilterDialog,
-          ),
-        ],
       ),
       body: StreamBuilder(
-        stream: _paymentStream(),
+        stream: FirebaseFirestore.instance.collection('payments').where('paymentStatus', isEqualTo: 'Selesai').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Text('Something went wrong');
@@ -74,11 +48,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
             return const Center(child: Text('Tidak ada data tersedia'));
           }
 
-          var payments = snapshot.data!.docs
-              .map((doc) => PaymentModel.fromSnapshot(doc))
-              .toList();
-          var carIds =
-              payments.map((payment) => payment.carId).toSet().toList();
+          var payments = snapshot.data!.docs.map((doc) => PaymentModel.fromSnapshot(doc)).toList();
+          var carIds = payments.map((payment) => payment.carId).toSet().toList();
 
           return FutureBuilder(
             future: _fetchCarNames(carIds),
@@ -133,37 +104,5 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
     );
   }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Filter Status"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _filterOption('Ditolak'),
-              _filterOption('Diproses'),
-              _filterOption('Disiapkan'),
-              _filterOption('Menuju Lokasi'),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  InkWell _filterOption(String status) {
-    return InkWell(
-      onTap: () {
-        _setFilter(status);
-        Navigator.pop(context); // Close the dialog
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text(status),
-      ),
-    );
-  }
 }
+

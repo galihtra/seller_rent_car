@@ -65,6 +65,15 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
     });
   }
 
+  Future<void> _deletePayment() async {
+    await FirebaseFirestore.instance
+        .collection('payments')
+        .doc(widget.dataPayment.id)
+        .delete();
+
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -357,6 +366,15 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                                   child: const Text("Tolak"),
                                 ),
                               const SizedBox(width: 10.0),
+                              if (widget.dataPayment.paymentStatus == 'Ditolak')
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      _updatePaymentStatus('Disiapkan'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red),
+                                  child: const Text("Terima Kembali"),
+                                ),
+                              const SizedBox(width: 10.0),
                               if (widget.dataPayment.paymentStatus ==
                                   'Diproses')
                                 ElevatedButton(
@@ -365,6 +383,34 @@ class _DetailNotificationScreenState extends State<DetailNotificationScreen> {
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green),
                                   child: const Text("Terima"),
+                                ),
+                              const SizedBox(width: 10.0),
+                              if (widget.dataPayment.paymentStatus ==
+                                  'Disiapkan')
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      _updatePaymentStatus('Menuju Lokasi'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green),
+                                  child: const Text("Menuju Lokasi"),
+                                ),
+                              const SizedBox(width: 10.0),
+                              if (widget.dataPayment.paymentStatus ==
+                                  'Menuju Lokasi')
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      _updatePaymentStatus('Selesai'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green),
+                                  child: const Text("Telah Diantarkan"),
+                                ),
+                              const SizedBox(width: 10.0),
+                              if (widget.dataPayment.paymentStatus == 'Selesai')
+                                ElevatedButton(
+                                  onPressed: () => _deletePayment(),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red),
+                                  child: const Text("Hapus Data"),
                                 ),
                             ],
                           ),
