@@ -5,8 +5,6 @@ import 'package:seller_rent_car/pages/auth/login_screen.dart';
 import 'package:seller_rent_car/pages/profile/edit_profile_screen.dart';
 import 'package:seller_rent_car/pages/profile/widgets/profile_card_widget.dart';
 
-import 'widgets/status_card_widget.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -167,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(),
+                            builder: (context) => const EditProfileScreen(),
                           ),
                         ).then((result) {
                           if (result != null && result) {
@@ -176,9 +174,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Profil Diperbarui"),
+                                  title: const Text("Profil Diperbarui"),
                                   content:
-                                      Text("Data profil berhasil diperbarui."),
+                                      const Text("Data profil berhasil diperbarui."),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () {
@@ -186,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         Navigator.of(context).pop();
                                         _updateUserData();
                                       },
-                                      child: Text("OK"),
+                                      child: const Text("OK"),
                                     ),
                                   ],
                                 );
